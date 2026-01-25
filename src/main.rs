@@ -1,12 +1,14 @@
 mod config_parser;
+mod download;
 
 use std::process::exit;
 
 use config_parser::*;
+use download::download;
 
 fn main() {
     let config = parse_config();
-    let config = match config {
+    let mut config = match config {
         Ok(config) => config,
         Err(ParseConfigError::FileNotFound) => {
             make_config();
@@ -18,4 +20,6 @@ fn main() {
         }
     };
     println!("Parsing returned {:#?}", config);
+
+    download(&mut config);
 }
