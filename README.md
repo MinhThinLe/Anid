@@ -26,7 +26,7 @@ directory = "target_directory"
 select = entry_number
 current_episode = episode_number
 ```
-  where 
+where 
     - `anime_name` is the name of the anime you're watching
     - `target_directory` is the full raw path (/home/user/...) as environment
       variable substitution ($HOME/...) isn't supported yet nor is ~
