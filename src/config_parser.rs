@@ -5,7 +5,7 @@ use std::time::Duration;
 
 use toml::{Table, Value};
 
-const DEFAULT_SLEEP_SECONDS: u64 = 24 * 60;
+const DEFAULT_SLEEP_SECONDS: u64 = 24 * 60 * 60;
 const CONFIG_PATH: &str = ".config/anime-dowloader/";
 pub const CONFIG_FILE: &str = "watchlist.toml";
 
