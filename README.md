@@ -16,7 +16,17 @@ since
 - Many torrents tracked are dead torrents (have 0 seeders)
 - Having to manually ssh into my Jellyfin server gets old after 2 - 3 times
 
-# Usage instruction
+# Configuration
+
+All the configuration options for this program is contained within the
+`config` table, as demonstrated by the example config below
+
+```toml
+[config]
+# Seconds to sleep after checking for possible downloads
+sleep_secs = sleep_secs
+```
+# Usage instructions
 
 - Run the program once for it to generate it's configuration directory or
   create the directory (and file) `~/.config/anime-downloader/watchlist.toml`
@@ -30,6 +40,7 @@ select = entry_number
 current_episode = episode_number
 ```
 where:
+- `id` is a valid TOML table name
 - `anime_name` is the name of the anime you're watching
 - `target_directory` is the full raw path (/home/user/...) as environment
   variable substitution ($HOME/...) isn't supported yet nor is ~
@@ -37,8 +48,6 @@ where:
   matching titles
 - `episode_number` is the episode number to begin download (the program will
   automatically increment this number)
-
-- Write a cron tab or whatever to automatically start the program
 
 # Special thanks
 
