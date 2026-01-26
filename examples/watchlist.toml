@@ -1,0 +1,17 @@
+[config]
+# Sleeps for 1 day before checking again
+sleep_secs = 1440
+
+# This can be any string without spaces and isn't config 
+[sousou_no_frieren_SS2]
+# The search term to use with ani-cli
+name = "Sousou no frieren"
+# Where to place files after downloading them
+directory = "/home/user/Videos"
+# Optional. The number to pass into ani-cli's -S (if there are more than 1 entries)
+select = 1
+# Episode to start downloading from 1 if you want to start from the series' beginning
+# Note that this also stores the state of the program and after each iteration,
+# the program increments this counter by serializing the read config file. Thus
+# any lines unread by the toml parser (Ex: comments) will be removed.
+current_episode = 1
