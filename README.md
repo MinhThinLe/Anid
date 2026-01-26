@@ -5,8 +5,8 @@ directory
 
 # Dependency
 
-Other than the obvious ani-cli, this program requires no runtime dependency.
-Install it and you're set
+Other than [ani-cli](https://github.com/pystardust/ani-cli), this program
+requires no runtime dependencies. Install it and you're set
 
 # Motivation
 
@@ -40,7 +40,7 @@ select = entry_number
 current_episode = episode_number
 ```
 where:
-- `id` is a valid TOML table name
+- `id` is a valid TOML table name (and isn't "config" for obvious reasons)
 - `anime_name` is the name of the anime you're watching
 - `target_directory` is the full raw path (/home/user/...) as environment
   variable substitution ($HOME/...) isn't supported yet nor is ~
