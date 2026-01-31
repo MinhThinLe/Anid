@@ -47,21 +47,21 @@ pub fn make_config() {
 pub fn get_config_file_path() -> PathBuf {
     let mut config_path = get_config_path();
     config_path.push(CONFIG_FILE);
-    return config_path;
+    config_path
 }
 
 pub fn get_config_path() -> PathBuf {
     let mut home_path = get_home_path();
     home_path.push(CONFIG_PATH);
-    return home_path;
+    home_path
 }
 
 pub fn get_home_path() -> PathBuf {
     match std::env::home_dir() {
-        Some(dir) => return dir,
+        Some(dir) => dir,
         None => {
             println!("Couldn't get the user's home directory, exiting");
             exit(1);
         }
-    };
+    }
 }
