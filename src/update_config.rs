@@ -1,10 +1,11 @@
+use std::fmt::Display;
 use std::fs::write;
 
 use crate::CONFIG_FILE;
 use crate::get_config_path;
-use crate::{AnimeEntry, Config};
+use crate::{AnimeEntry, App};
 
-impl Config {
+impl App {
     pub fn write_to_disk(&self) {
         let mut config_path = get_config_path();
         config_path.push(CONFIG_FILE);
@@ -17,8 +18,8 @@ impl Config {
     }
 }
 
-impl ToString for AnimeEntry {
-    fn to_string(&self) -> String {
+impl Display for AnimeEntry {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut serialized = String::new();
         serialized.push_str(&format!("[{}]\n", self.get_id()));
         serialized.push_str(&format!("name = \"{}\"\n", self.get_name()));
@@ -35,12 +36,13 @@ impl ToString for AnimeEntry {
         ));
 
         serialized.push('\n');
-        serialized
+        write!(f, "{}", serialized)
     }
 }
 
-impl ToString for Config {
-    fn to_string(&self) -> String {
+
+impl Display for App {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut serialized = String::new();
 
         serialized.push_str("[config]\n");
@@ -54,6 +56,6 @@ impl ToString for Config {
             serialized.push_str(&entry.to_string());
         }
 
-        serialized
+        write!(f, "{}", serialized)
     }
 }

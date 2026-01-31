@@ -9,9 +9,14 @@ const DEFAULT_SLEEP_SECONDS: u64 = 24 * 60 * 60;
 const CONFIG_PATH: &str = ".config/anime-dowloader/";
 pub const CONFIG_FILE: &str = "watchlist.toml";
 
-#[derive(Debug)]
-pub struct Config {
+#[derive(Debug, Default)]
+pub struct App {
     pub watch_list: Vec<AnimeEntry>,
+    settings: Settings,
+}
+
+#[derive(Debug)]
+pub struct Settings {
     sleep_duration: Duration,
 }
 
@@ -26,7 +31,6 @@ pub struct AnimeEntry {
 
 #[derive(Debug)]
 pub enum ParseConfigError {
-    FileNotFound,
     InvalidTOML,
 }
 
@@ -44,18 +48,44 @@ fn get_sleep_time(table: &Value) -> u64 {
     sleep_time as u64
 }
 
-impl Default for Config {
+impl Default for Settings {
     fn default() -> Self {
-        Self {
-            watch_list: vec![],
+        Settings {
             sleep_duration: Duration::from_secs(DEFAULT_SLEEP_SECONDS),
         }
     }
 }
 
-impl Config {
+impl App {
     pub fn get_sleep_duration(&self) -> Duration {
-        self.sleep_duration
+        self.settings.sleep_duration
+    }
+
+    pub fn new_from_config() -> Result<App, ParseConfigError> {
+        let mut config_file = get_config_path();
+        config_file.push(CONFIG_FILE);
+        let Ok(config_file) = fs::read_to_string(config_file) else {
+            make_config();
+            // If you fail at first, simply try again
+            return App::new_from_config();
+        };
+        let parsed = config_file
+            .parse::<Table>()
+            .or(Err(ParseConfigError::InvalidTOML))?;
+
+        let mut app = App::default();
+
+        for item in parsed {
+            if (item.0) == "config" {
+                app.settings = parse_settings(&item.1);
+                continue;
+            }
+            if let Some(entry) = AnimeEntry::from_table(item.0, item.1) {
+                app.watch_list.push(entry);
+            }
+        }
+
+        Ok(app)
     }
 }
 
@@ -116,27 +146,10 @@ impl AnimeEntry {
     }
 }
 
-pub fn parse_config() -> Result<Config, ParseConfigError> {
-    let mut config_file = get_config_path();
-    config_file.push(CONFIG_FILE);
-    let config_file = fs::read_to_string(config_file).or(Err(ParseConfigError::FileNotFound))?;
-    let parsed = config_file
-        .parse::<Table>()
-        .or(Err(ParseConfigError::InvalidTOML))?;
-
-    let mut config = Config::default();
-
-    for item in parsed {
-        if (item.0) == "config" {
-            config.sleep_duration = Duration::from_secs(get_sleep_time(&item.1));
-            continue;
-        }
-        if let Some(entry) = AnimeEntry::from_table(item.0, item.1) {
-            config.watch_list.push(entry);
-        }
+fn parse_settings(table: &Value) -> Settings {
+    Settings {
+        sleep_duration: Duration::from_secs(get_sleep_time(table)),
     }
-
-    Ok(config)
 }
 
 pub fn make_config() {
