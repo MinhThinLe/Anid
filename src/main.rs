@@ -1,6 +1,6 @@
 mod config_parser;
 mod download;
-mod update_config;
+mod update_state;
 
 use std::process::exit;
 

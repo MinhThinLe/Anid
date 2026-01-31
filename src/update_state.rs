@@ -1,16 +1,14 @@
 use std::fmt::Display;
 use std::fs::write;
 
-use crate::CONFIG_FILE;
-use crate::get_config_path;
+use crate::config_parser::get_config_file_path;
 use crate::{AnimeEntry, App};
 
 impl App {
     pub fn write_to_disk(&self) {
-        let mut config_path = get_config_path();
-        config_path.push(CONFIG_FILE);
+        let config_file = get_config_file_path();
 
-        let error = write(config_path, self.to_string());
+        let error = write(config_file, self.to_string());
         match error {
             Ok(_) => (),
             Err(error) => println!("Couldn't write file due to {}", error),

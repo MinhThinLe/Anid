@@ -62,8 +62,7 @@ impl App {
     }
 
     pub fn new_from_config() -> Result<App, ParseConfigError> {
-        let mut config_file = get_config_path();
-        config_file.push(CONFIG_FILE);
+        let config_file = get_config_file_path();
         let Ok(config_file) = fs::read_to_string(config_file) else {
             make_config();
             // If you fail at first, simply try again
@@ -173,14 +172,24 @@ pub fn make_config() {
     }
 }
 
+pub fn get_config_file_path() -> PathBuf {
+    let mut config_path = get_config_path();
+    config_path.push(CONFIG_FILE);
+    return config_path;
+}
+
 pub fn get_config_path() -> PathBuf {
-    let mut home = match std::env::home_dir() {
-        Some(dir) => dir,
+    let mut home_path = get_home_path();
+    home_path.push(CONFIG_PATH);
+    return home_path;
+}
+
+pub fn get_home_path() -> PathBuf {
+    match std::env::home_dir() {
+        Some(dir) => return dir,
         None => {
             println!("Couldn't get the user's home directory, exiting");
             exit(1);
         }
     };
-    home.push(CONFIG_PATH);
-    home
 }
