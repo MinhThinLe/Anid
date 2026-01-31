@@ -111,7 +111,7 @@ impl AnimeEntry {
             self.current_episode.to_string(),
             self.name.to_string(),
         ];
-        if let Some(select) = self.entry_number {
+        if let Some(select) = self.get_entry_number() {
             args.extend_from_slice(&["-S".to_string(), select.to_string()]);
         }
 

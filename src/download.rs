@@ -21,7 +21,7 @@ impl App {
                 exit(1);
             }
         }
-        self.write_to_disk();
+        self.write_state_file();
         println!(
             "All tasks finished, going to sleep for {} seconds",
             self.get_sleep_duration().as_secs()
