@@ -92,7 +92,7 @@ impl App {
                 app.settings = parse_settings(&value);
                 continue;
             }
-            if let Some(entry) = AnimeEntry::from_table(table_name, value) {
+            if let Some(entry) = AnimeEntry::from_config_table(table_name, value) {
                 app.watch_list.push(entry);
             }
         }
@@ -103,9 +103,8 @@ impl App {
 }
 
 impl AnimeEntry {
-    fn from_table(id: String, table: Value) -> Option<Self> {
+    fn from_config_table(id: String, table: Value) -> Option<Self> {
         let name = table.get("name")?.as_str()?.into();
-        let current_episode = table.get("current_episode")?.as_integer()? as u16;
         let target_dir = table.get("directory")?.as_str()?.into();
         let id = id.into();
 
@@ -116,7 +115,7 @@ impl AnimeEntry {
             name,
             entry_number,
             target_dir,
-            current_episode,
+            current_episode: 1,
         })
     }
 
