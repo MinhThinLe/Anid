@@ -14,21 +14,19 @@ impl App {
     }
 
     pub fn main_loop(&mut self) {
-        loop {
-            match self.download() {
-                Ok(_) => (),
-                Err(error) => {
-                    println!("{error}, exiting now");
-                    exit(1);
-                }
+        match self.download() {
+            Ok(_) => (),
+            Err(error) => {
+                println!("{error}, exiting now");
+                exit(1);
             }
-            self.write_state_file();
-            println!(
-                "All tasks finished, going to sleep for {} seconds",
-                self.get_sleep_duration().as_secs()
-            );
-            self.sleep();
         }
+        self.write_state_file();
+        println!(
+            "All tasks finished, going to sleep for {} seconds",
+            self.get_sleep_duration().as_secs()
+        );
+        self.sleep();
     }
 
     fn sleep(&self) {

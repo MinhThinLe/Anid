@@ -15,5 +15,7 @@ fn main() {
             exit(1);
         }
     };
-    app.main_loop();
+    loop {
+        app.main_loop();
+    }
 }
