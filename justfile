@@ -6,4 +6,5 @@ build:
     cargo build --release
 
 install: build
-    install -Dm 755 target/release/anime-downloader /user/bin
+    sudo install -Dm 755 target/release/anime-downloader /usr/bin
+    sudo install -Dm 644 anime-downloader.service /usr/lib/systemd/user

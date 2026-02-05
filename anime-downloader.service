@@ -1,0 +1,8 @@
+[Unit]
+Description=Download your favourite animes
+
+[Service]
+ExecStart=/usr/bin/anime-downloader
+
+[Install]
+WantedBy=multi-user.target
