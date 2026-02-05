@@ -3,10 +3,10 @@
 This tool makes use of ani-cli to download anime episodes to a designated
 directory
 
-# Dependency
+# Dependencies
 
-Other than [ani-cli](https://github.com/pystardust/ani-cli), this program
-requires no runtime dependencies. Install it and you're set
+- [Just](https://just.systems): build tool
+- [ani-cli](https://github.com/pystardust/ani-cli): Download/scrape backend
 
 # Motivation
 
@@ -31,7 +31,7 @@ sleep_secs = sleep_secs
 - Run the program once for it to generate it's configuration directory or
   create the directory (and file) `~/.config/anime-downloader/watchlist.toml`
   yourself
-- Write the config file as follow
+- Make a config file in the following form
 ```toml
 [id]
 name = "anime_name"
@@ -48,6 +48,13 @@ where:
   matching titles
 - `episode_number` is the episode number to begin download (the program will
   automatically increment this number)
+
+While you could run this as you would any other long running process, it is
+advisable to start/enable the bundled systemd-unit with
+
+```sh
+systemctl start/enable --user anime-downloader
+```
 
 # Special thanks
 
