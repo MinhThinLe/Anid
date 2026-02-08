@@ -3,12 +3,12 @@
 This tool makes use of ani-cli to download anime episodes to a designated
 directory
 
-# Dependencies
+## Dependencies
 
 - [Just](https://just.systems): build tool
 - [ani-cli](https://github.com/pystardust/ani-cli): Download/scrape backend
 
-# Motivation
+## Motivation
 
 I wanted something akin to the arr stack but uses direct downloads instead
 since
@@ -16,7 +16,7 @@ since
 - Many torrents tracked are dead torrents (have 0 seeders)
 - Having to manually ssh into my Jellyfin server gets old after 2 - 3 times
 
-# Configuration
+## Configuration
 
 All the configuration options for this program is contained within the
 `config` table, as demonstrated by the example config below
@@ -27,7 +27,7 @@ All the configuration options for this program is contained within the
 sleep_secs = sleep_secs
 ```
 
-# Installation
+## Installation
 
 Since there isn't a binary package for this project yet, you'll have to build
 it from source. To do so, first install all the dependencies listed in the
@@ -39,7 +39,7 @@ To install, run the command
 just install
 ```
 
-# Configuration
+## Configuration
 
 - Run the program once for it to generate it's configuration directory or
   create the directory (and file) `~/.config/anime-downloader/watchlist.toml`
@@ -69,12 +69,16 @@ advisable to start/enable the bundled systemd-unit with
 systemctl start/enable --user anime-downloader
 ```
 
-# Contribution
+## Contribution
 
 All contributions are appreciated. If you have a suggestion/feature request or
 bug report, please do so by submitting a new issue or better yet, create a new
 pull request. 
 
-# Special thanks
+## Special thanks
 
 - [ani-cli](https://github.com/pystardust/ani-cli) For the download backend
+
+## Why the name?
+
+Anid is a combination of anime and d (daemon). Very creative, I know
