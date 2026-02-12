@@ -20,6 +20,7 @@ impl App {
         for entry in self.watch_list.iter_mut() {
             let downloaded = entry.download(&temp_path)?;
             if !downloaded {
+                cleanup(&temp_path); // Only cleanup failed downloads
                 continue;
             }
             if !exists(entry.get_target_directory()).expect("Can't read the filesystem") {
@@ -129,5 +130,13 @@ fn move_downloaded_files(temp_path: &Path, downloaded_entry: &AnimeEntry) {
             remove_file(&old_path).expect("Unable to remove file");
             continue;
         }
+    }
+}
+
+fn cleanup(temp_path: &Path) {
+    let files = list_files(temp_path);
+    for file in files {
+        let file = file.expect("Huh?");
+        remove_file(file.path()).expect("WHAT?") ;
     }
 }
