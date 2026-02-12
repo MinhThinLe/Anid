@@ -7,6 +7,7 @@ use toml::map::Map;
 use toml::{Table, Value};
 
 const DEFAULT_SLEEP_SECONDS: u64 = 24 * 60 * 60;
+const DEFAULT_DOWNLOAD_PATH: &str = "/tmp/anid/";
 
 #[derive(Debug, Default)]
 pub struct App {
@@ -17,6 +18,7 @@ pub struct App {
 #[derive(Debug)]
 pub struct Settings {
     sleep_duration: Duration,
+    dowload_location: PathBuf,
 }
 
 #[derive(Debug)]
@@ -26,6 +28,7 @@ pub struct AnimeEntry {
     current_episode: u16,
     target_dir: PathBuf,
     entry_number: Option<u8>,
+    rename_pattern: Option<String>,
 }
 
 #[derive(Debug)]
@@ -33,24 +36,11 @@ pub enum ParseError {
     InvalidTOML,
 }
 
-fn get_entry_number(table: &Value) -> Option<u8> {
-    Some(table.get("select")?.as_integer()? as u8)
-}
-
-fn get_sleep_time(table: &Value) -> u64 {
-    let Some(sleep_time) = table.get("sleep_secs") else {
-        return DEFAULT_SLEEP_SECONDS;
-    };
-    let Some(sleep_time) = sleep_time.as_integer() else {
-        return DEFAULT_SLEEP_SECONDS;
-    };
-    sleep_time as u64
-}
-
 impl Default for Settings {
     fn default() -> Self {
         Settings {
             sleep_duration: Duration::from_secs(DEFAULT_SLEEP_SECONDS),
+            dowload_location: PathBuf::from(DEFAULT_DOWNLOAD_PATH),
         }
     }
 }
@@ -58,6 +48,10 @@ impl Default for Settings {
 impl App {
     pub fn get_sleep_duration(&self) -> Duration {
         self.settings.sleep_duration
+    }
+
+    pub fn get_temp_path(&self) -> PathBuf {
+        self.settings.dowload_location.clone()
     }
 
     fn resume_from_state(&mut self) {
@@ -104,17 +98,40 @@ impl App {
 
 impl AnimeEntry {
     fn from_config_table(id: String, table: Value) -> Option<Self> {
+        fn get_entry_number(table: &Value) -> Option<u8> {
+            Some(table.get("select")?.as_integer()? as u8)
+        }
+
+        fn get_rename_pattern(table: &Value) -> Option<String> {
+            let Some(pattern) = table.get("rename") else {
+                return None;
+            };
+
+            let Some(pattern) = pattern.as_str() else {
+                println!("Warning: rename must be a string");
+                return None;
+            };
+
+            if pattern.is_empty() {
+                return None;
+            }
+
+            Some(pattern.to_string())
+        }
+
         let name = table.get("name")?.as_str()?.into();
         let target_dir = table.get("directory")?.as_str()?.into();
         let id = id.into();
 
         let entry_number = get_entry_number(&table);
+        let rename_pattern = get_rename_pattern(&table);
 
         Some(Self {
             id,
             name,
             entry_number,
             target_dir,
+            rename_pattern,
             current_episode: 1,
         })
     }
@@ -156,11 +173,41 @@ impl AnimeEntry {
     pub fn get_current_episode(&self) -> u16 {
         self.current_episode
     }
+
+    pub fn get_rename_pattern(&self) -> Option<&str> {
+        self.rename_pattern.as_deref()
+    }
 }
 
 fn parse_settings(table: &Value) -> Settings {
+    fn get_sleep_time(table: &Value) -> u64 {
+        let Some(sleep_time) = table.get("sleep_secs") else {
+            return DEFAULT_SLEEP_SECONDS;
+        };
+        let Some(sleep_time) = sleep_time.as_integer() else {
+            return DEFAULT_SLEEP_SECONDS;
+        };
+        sleep_time as u64
+    }
+
+    fn get_temp_path(table: &Value) -> PathBuf {
+        let Some(path) = table.get("temp_path") else {
+            return DEFAULT_DOWNLOAD_PATH.into();
+        };
+        let Some(path) = path.as_str() else {
+            println!(
+                "Warning: {:?} isn't a valid path, defaulting to {}",
+                path, DEFAULT_DOWNLOAD_PATH
+            );
+            return DEFAULT_DOWNLOAD_PATH.into();
+        };
+
+        return path.into();
+    }
+
     Settings {
         sleep_duration: Duration::from_secs(get_sleep_time(table)),
+        dowload_location: get_temp_path(table),
     }
 }
 

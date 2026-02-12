@@ -1,6 +1,7 @@
 [config]
 # Sleeps for 1 day before checking again
 sleep_secs = 86400
+temp_path = "/tmp/anid"
 
 # This can be any string without spaces and isn't config 
 [sousou_no_frieren_SS2]
@@ -8,7 +9,14 @@ sleep_secs = 86400
 name = "Sousou no frieren"
 # Where to place files after downloading them
 directory = "/home/your_user_name_here/Videos"
-# (Optional) The number to pass into ani-cli's -S (if there are more than 1 entries)
+# (Optional) The number to pass into ani-cli's -S (if there are more than
+# 1 entries)
 select = 1
-# (Optional) Episode to start downloading from 1 if you want to start from the series' beginning 
+# (Optional) Episode to start downloading from, 1 if you want to start from the
+# series' beginning 
 current_episode = 1
+# (Optional) Defines how the program should rename the downloaded file. If left
+# empty or omited, the file won't be renamed
+# Only supports addition (every other operators will be ignored) but why would
+# you need anything else anyway
+rename = "Sousou no Frieren Season 2 Episode {episode+12}"
