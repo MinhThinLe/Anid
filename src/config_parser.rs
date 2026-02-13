@@ -83,7 +83,7 @@ impl App {
 
         for (table_name, value) in parsed {
             if (table_name) == "config" {
-                app.settings = parse_settings(&value);
+                app.settings = Settings::from_table(&value);
                 continue;
             }
             if let Some(entry) = AnimeEntry::from_config_table(table_name, value) {
@@ -179,35 +179,37 @@ impl AnimeEntry {
     }
 }
 
-fn parse_settings(table: &Value) -> Settings {
-    fn get_sleep_time(table: &Value) -> u64 {
-        let Some(sleep_time) = table.get("sleep_secs") else {
-            return DEFAULT_SLEEP_SECONDS;
-        };
-        let Some(sleep_time) = sleep_time.as_integer() else {
-            return DEFAULT_SLEEP_SECONDS;
-        };
-        sleep_time as u64
-    }
+impl Settings {
+    fn from_table(table: &Value) -> Settings {
+        fn get_sleep_time(table: &Value) -> u64 {
+            let Some(sleep_time) = table.get("sleep_secs") else {
+                return DEFAULT_SLEEP_SECONDS;
+            };
+            let Some(sleep_time) = sleep_time.as_integer() else {
+                return DEFAULT_SLEEP_SECONDS;
+            };
+            sleep_time as u64
+        }
 
-    fn get_temp_path(table: &Value) -> PathBuf {
-        let Some(path) = table.get("temp_path") else {
-            return DEFAULT_DOWNLOAD_PATH.into();
-        };
-        let Some(path) = path.as_str() else {
-            println!(
-                "Warning: {:?} isn't a valid path, defaulting to {}",
-                path, DEFAULT_DOWNLOAD_PATH
-            );
-            return DEFAULT_DOWNLOAD_PATH.into();
-        };
+        fn get_temp_path(table: &Value) -> PathBuf {
+            let Some(path) = table.get("temp_path") else {
+                return DEFAULT_DOWNLOAD_PATH.into();
+            };
+            let Some(path) = path.as_str() else {
+                println!(
+                    "Warning: {:?} isn't a valid path, defaulting to {}",
+                    path, DEFAULT_DOWNLOAD_PATH
+                );
+                return DEFAULT_DOWNLOAD_PATH.into();
+            };
 
-        return path.into();
-    }
+            return path.into();
+        }
 
-    Settings {
-        sleep_duration: Duration::from_secs(get_sleep_time(table)),
-        dowload_location: get_temp_path(table),
+        Settings {
+            sleep_duration: Duration::from_secs(get_sleep_time(table)),
+            dowload_location: get_temp_path(table),
+        }
     }
 }
 
